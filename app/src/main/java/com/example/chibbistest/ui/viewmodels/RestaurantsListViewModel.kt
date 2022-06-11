@@ -30,6 +30,7 @@ class RestaurantsListViewModel @Inject constructor(private val restaurantsReposi
                     mutableListState.emit(RestaurantsListState.Error(response.message()))
                 }
             } catch (exc: Throwable) {
+                exc.printStackTrace()
                 mutableListState.emit(RestaurantsListState.Error(exc.localizedMessage!!))
             }
         }

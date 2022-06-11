@@ -7,6 +7,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import com.example.chibbistest.R
 
 object AppBar {
     @Composable
@@ -21,6 +23,7 @@ object AppBar {
                     color = Color.White
                 )
             },
+            backgroundColor = colorResource(id = R.color.royalBlue),
             navigationIcon = {
                 IconButton(onClick = { }) {
                     Icon(icon, contentDescription = "", tint = Color.White)

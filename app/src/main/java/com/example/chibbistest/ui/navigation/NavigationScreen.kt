@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.chibbistest.R
 import com.example.chibbistest.ui.Screens
 import com.example.chibbistest.ui.UiConsts
 import com.example.chibbistest.ui.listscreens.HitsListScreen
@@ -65,21 +67,22 @@ class NavigationScreen : AppCompatActivity() {
         navController: NavController,
         items: List<BottomNavigationScreens>
     ) {
-        BottomNavigation {
-            when (val currentRoute = currentRoute(navController)) { currentRoute ->
-                items.forEach { screen ->
-                    BottomNavigationItem(
-                        icon = { Icon(screen.icon, stringResource(id = screen.resourceId)) },
-                        label = { Text(stringResource(id = screen.resourceId)) },
-                        selected = currentRoute == screen.route,
-                        selectedContentColor = Color.White,
-                        onClick = {
-                            if (currentRoute != screen.route) {
-                                navController.navigate(screen.route)
+        BottomNavigation(backgroundColor = colorResource(id = R.color.royalBlue)) {
+            when (val currentRoute = currentRoute(navController)) {
+                currentRoute ->
+                    items.forEach { screen ->
+                        BottomNavigationItem(
+                            icon = { Icon(screen.icon, stringResource(id = screen.resourceId)) },
+                            label = { Text(stringResource(id = screen.resourceId)) },
+                            selected = currentRoute == screen.route,
+                            selectedContentColor = Color.White,
+                            onClick = {
+                                if (currentRoute != screen.route) {
+                                    navController.navigate(screen.route)
+                                }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
             }
         }
     }

@@ -3,4 +3,9 @@
     <string name="restaurants_title">Рестораны</string>
     <string name="hits_title">Хиты</string>
     <string name="reviews_title">Отзывы</string>
+    <string name="message_error_obtaining_data">Ошибка при получении данных</string>
+    <string name="caption_free">Бесплатно</string>
+    <string name="caption_minutes">мин</string>
+    <string name="caption_reviews">отзывов</string>
+    <string name="caption_from">от</string>
 </resources>

@@ -1,3 +1,3 @@
 package com.example.chibbistest.data.models
 
-data class Specialization(val name: String)
+data class Specialization(val Name: String)
