@@ -37,47 +37,45 @@ object HitsListScreen {
 
     @Composable
     fun Screen() {
-        Scaffold {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                val viewModel: HitsListViewModel =
-                    viewModel(factory = HitsListViewModelFactory())
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            val viewModel: HitsListViewModel =
+                viewModel(factory = HitsListViewModelFactory())
 
-                AppBar.AppBar(
-                    title = stringResource(id = BottomNavigationScreens.Hits.resourceId),
-                    icon = BottomNavigationScreens.Hits.icon
+            AppBar.AppBar(
+                title = stringResource(id = BottomNavigationScreens.Hits.resourceId),
+                icon = BottomNavigationScreens.Hits.icon
+            )
+
+            var screenState: HitsListState by remember {
+                mutableStateOf(
+                    HitsListState.Loading
                 )
+            }
 
-                var screenState: HitsListState by remember {
-                    mutableStateOf(
-                        HitsListState.Loading
-                    )
-                }
-
-                val lifecycle = LocalLifecycleOwner.current
-                LaunchedEffect(key1 = Unit) {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.listState.collect { listState ->
-                            screenState = listState
-                        }
+            val lifecycle = LocalLifecycleOwner.current
+            LaunchedEffect(key1 = Unit) {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.listState.collect { listState ->
+                        screenState = listState
                     }
                 }
+            }
 
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.fetchHits()
+            LaunchedEffect(key1 = Unit) {
+                viewModel.fetchHits()
+            }
+
+            when (screenState) {
+                is HitsListState.Loaded -> {
+                    ListView((screenState as HitsListState.Loaded))
                 }
-
-                when (screenState) {
-                    is HitsListState.Loaded -> {
-                        ListView((screenState as HitsListState.Loaded))
-                    }
-                    is HitsListState.Loading -> {
-                        LoadingView.LoadingView()
-                    }
-                    is HitsListState.Error -> {
-                        ErrorView.ErrorView((screenState as HitsListState.Error).message)
-                    }
+                is HitsListState.Loading -> {
+                    LoadingView.LoadingView()
+                }
+                is HitsListState.Error -> {
+                    ErrorView.ErrorView((screenState as HitsListState.Error).message)
                 }
             }
         }
@@ -88,10 +86,13 @@ object HitsListScreen {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(UiConsts.screenPadding),
             modifier = Modifier
-                .padding(UiConsts.screenPadding)
+                .padding(horizontal = UiConsts.screenPadding)
                 .fillMaxWidth()
         ) {
             itemsIndexed(screenState.hits) { index, hit ->
+                if (index == 0) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
                 HitsListItem(hit)
             }
         }

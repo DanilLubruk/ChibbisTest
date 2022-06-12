@@ -11,4 +11,7 @@
     <string name="caption_search_by_name">Поиск по имени</string>
     <string name="caption_recipe">Состав</string>
     <string name="caption_about">о заведении</string>
+    <string name="message_ask_exit">Хотите выйти?</string>
+    <string name="caption_cancel">Отмена</string>
+    <string name="caption_ok">Ок</string>
 </resources>

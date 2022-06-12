@@ -47,47 +47,45 @@ object ReviewsListScreen {
 
     @Composable
     fun Screen() {
-        Scaffold {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                val viewModel: ReviewsListViewModel =
-                    viewModel(factory = ReviewsListViewModelFactory())
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            val viewModel: ReviewsListViewModel =
+                viewModel(factory = ReviewsListViewModelFactory())
 
-                AppBar.AppBar(
-                    title = stringResource(id = BottomNavigationScreens.Reviews.resourceId),
-                    icon = BottomNavigationScreens.Reviews.icon
+            AppBar.AppBar(
+                title = stringResource(id = BottomNavigationScreens.Reviews.resourceId),
+                icon = BottomNavigationScreens.Reviews.icon
+            )
+
+            var screenState: ReviewsListState by remember {
+                mutableStateOf(
+                    ReviewsListState.Loading
                 )
+            }
 
-                var screenState: ReviewsListState by remember {
-                    mutableStateOf(
-                        ReviewsListState.Loading
-                    )
-                }
-
-                val lifecycle = LocalLifecycleOwner.current
-                LaunchedEffect(key1 = Unit) {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.listState.collect { listState ->
-                            screenState = listState
-                        }
+            val lifecycle = LocalLifecycleOwner.current
+            LaunchedEffect(key1 = Unit) {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.listState.collect { listState ->
+                        screenState = listState
                     }
                 }
+            }
 
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.fetchReviews()
+            LaunchedEffect(key1 = Unit) {
+                viewModel.fetchReviews()
+            }
+
+            when (screenState) {
+                is ReviewsListState.Loaded -> {
+                    ListView((screenState as ReviewsListState.Loaded))
                 }
-
-                when (screenState) {
-                    is ReviewsListState.Loaded -> {
-                        ListView((screenState as ReviewsListState.Loaded))
-                    }
-                    is ReviewsListState.Loading -> {
-                        LoadingView.LoadingView()
-                    }
-                    is ReviewsListState.Error -> {
-                        ErrorView.ErrorView((screenState as ReviewsListState.Error).message)
-                    }
+                is ReviewsListState.Loading -> {
+                    LoadingView.LoadingView()
+                }
+                is ReviewsListState.Error -> {
+                    ErrorView.ErrorView((screenState as ReviewsListState.Error).message)
                 }
             }
         }
@@ -98,10 +96,13 @@ object ReviewsListScreen {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(UiConsts.screenPadding),
             modifier = Modifier
-                .padding(UiConsts.screenPadding)
+                .padding(horizontal = UiConsts.screenPadding)
                 .fillMaxWidth()
         ) {
             itemsIndexed(screenState.reviews) { index, review ->
+                if (index == 0) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
                 ReviewListItem(review)
             }
         }

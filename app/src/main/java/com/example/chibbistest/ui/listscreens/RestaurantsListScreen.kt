@@ -47,115 +47,113 @@ object RestaurantsListScreen {
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun Screen() {
-        Scaffold {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                val viewModel: RestaurantsListViewModel =
-                    viewModel(factory = RestaurantsListViewModelFactory())
-                var showSearch by rememberSaveable { mutableStateOf(false) }
-                var searchText by rememberSaveable { mutableStateOf("") }
-                val setSearchText: (String) -> Unit = {
-                    searchText = it
-                    viewModel.onSearchTextChanged(searchText)
-                }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            val viewModel: RestaurantsListViewModel =
+                viewModel(factory = RestaurantsListViewModelFactory())
+            var showSearch by rememberSaveable { mutableStateOf(false) }
+            var searchText by rememberSaveable { mutableStateOf("") }
+            val setSearchText: (String) -> Unit = {
+                searchText = it
+                viewModel.onSearchTextChanged(searchText)
+            }
 
-                val keyboardController = LocalSoftwareKeyboardController.current
-                val focusRequester = remember { FocusRequester() }
+            val keyboardController = LocalSoftwareKeyboardController.current
+            val focusRequester = remember { FocusRequester() }
 
-                AppBar.AppBar(
-                    title = stringResource(id = BottomNavigationScreens.Restaurants.resourceId),
-                    icon = BottomNavigationScreens.Restaurants.icon,
-                    actions = {
-                        IconButton(onClick = {
-                            setSearchText("")
-                            showSearch = !showSearch
-                            if (showSearch) {
-                                keyboardController?.show()
-                            } else {
-                                keyboardController?.hide()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "",
-                                tint = Color.White
-                            )
+            AppBar.AppBar(
+                title = stringResource(id = BottomNavigationScreens.Restaurants.resourceId),
+                icon = BottomNavigationScreens.Restaurants.icon,
+                actions = {
+                    IconButton(onClick = {
+                        setSearchText("")
+                        showSearch = !showSearch
+                        if (showSearch) {
+                            keyboardController?.show()
+                        } else {
+                            keyboardController?.hide()
                         }
-                    }
-                )
-
-                var screenState: RestaurantsListState by remember {
-                    mutableStateOf(
-                        RestaurantsListState.Loading
-                    )
-                }
-
-                val lifecycle = LocalLifecycleOwner.current
-                LaunchedEffect(key1 = Unit) {
-                    lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        viewModel.listState.collect { listState ->
-                            screenState = listState
-                        }
-                    }
-                }
-
-                LaunchedEffect(key1 = Unit) {
-                    viewModel.fetchRestaurants()
-                }
-
-                AnimatedVisibility(visible = showSearch) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(UiConsts.screenPadding)
-                            .focusRequester(focusRequester),
-                        value = searchText,
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(
-                            onDone = { keyboardController?.hide() }
-                        ),
-                        onValueChange = {
-                            setSearchText(it)
-                        },
-                        trailingIcon = {
-                            AnimatedVisibility(
-                                visible = searchText != "",
-                            ) {
-                                IconButton(onClick = {
-                                    setSearchText("")
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Close,
-                                        contentDescription = ""
-                                    )
-                                }
-
-                            }
-                        },
-                        label = { Text(stringResource(id = R.string.caption_search_by_name)) },
-                        textStyle = MaterialTheme.typography.body1,
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.White,
-                            focusedIndicatorColor = colorResource(id = R.color.royalBlue),
-                            focusedLabelColor = colorResource(id = R.color.royalBlue),
-                            cursorColor = colorResource(id = R.color.royalBlue),
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "",
+                            tint = Color.White
                         )
-                    )
+                    }
                 }
+            )
 
-                when (screenState) {
-                    is RestaurantsListState.Loaded -> {
-                        ListView((screenState as RestaurantsListState.Loaded))
+            var screenState: RestaurantsListState by remember {
+                mutableStateOf(
+                    RestaurantsListState.Loading
+                )
+            }
+
+            val lifecycle = LocalLifecycleOwner.current
+            LaunchedEffect(key1 = Unit) {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.listState.collect { listState ->
+                        screenState = listState
                     }
-                    is RestaurantsListState.Loading -> {
-                        LoadingView.LoadingView()
-                    }
-                    is RestaurantsListState.Error -> {
-                        ErrorView.ErrorView((screenState as RestaurantsListState.Error).message)
-                    }
+                }
+            }
+
+            LaunchedEffect(key1 = Unit) {
+                viewModel.fetchRestaurants()
+            }
+
+            AnimatedVisibility(visible = showSearch) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(UiConsts.screenPadding)
+                        .focusRequester(focusRequester),
+                    value = searchText,
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    onValueChange = {
+                        setSearchText(it)
+                    },
+                    trailingIcon = {
+                        AnimatedVisibility(
+                            visible = searchText != "",
+                        ) {
+                            IconButton(onClick = {
+                                setSearchText("")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = ""
+                                )
+                            }
+
+                        }
+                    },
+                    label = { Text(stringResource(id = R.string.caption_search_by_name)) },
+                    textStyle = MaterialTheme.typography.body1,
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.Black,
+                        backgroundColor = Color.White,
+                        focusedIndicatorColor = colorResource(id = R.color.royalBlue),
+                        focusedLabelColor = colorResource(id = R.color.royalBlue),
+                        cursorColor = colorResource(id = R.color.royalBlue),
+                    )
+                )
+            }
+
+            when (screenState) {
+                is RestaurantsListState.Loaded -> {
+                    ListView((screenState as RestaurantsListState.Loaded))
+                }
+                is RestaurantsListState.Loading -> {
+                    LoadingView.LoadingView()
+                }
+                is RestaurantsListState.Error -> {
+                    ErrorView.ErrorView((screenState as RestaurantsListState.Error).message)
                 }
             }
         }
@@ -166,10 +164,13 @@ object RestaurantsListScreen {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(UiConsts.screenPadding),
             modifier = Modifier
-                .padding(UiConsts.screenPadding)
+                .padding(horizontal = UiConsts.screenPadding)
                 .fillMaxWidth()
         ) {
             itemsIndexed(screenState.restaurants) { index, restaurant ->
+                if (index == 0) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
                 RestaurantListItem(restaurant)
             }
         }
