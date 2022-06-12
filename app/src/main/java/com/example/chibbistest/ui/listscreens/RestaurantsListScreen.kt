@@ -1,27 +1,34 @@
 package com.example.chibbistest.ui.listscreens
 
 import android.graphics.drawable.VectorDrawable
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.BrokenImage
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -69,6 +76,9 @@ object RestaurantsListScreen {
                 LaunchedEffect(key1 = Unit) {
                     viewModel.fetchRestaurants()
                 }
+
+                var showSearch by rememberSaveable { mutableStateOf(false) }
+                var searchText by rememberSaveable { mutableStateOf("") }
 
                 when (screenState) {
                     is RestaurantsListState.Loaded -> {
@@ -145,7 +155,7 @@ object RestaurantsListScreen {
                                     .width(UiConsts.smallImageSize),
                                 imageVector = Icons.Filled.ThumbUp,
                                 contentDescription = "",
-                                tint = androidx.compose.ui.graphics.Color.Green
+                                tint = colorResource(id = R.color.deepGreen)
                             )
                             Spacer(modifier = Modifier.width(UiConsts.listItemSmallMargin))
                             Text(
@@ -153,7 +163,7 @@ object RestaurantsListScreen {
                                 style = TextStyle(
                                     fontSize = UiConsts.textSmallSize,
                                     fontWeight = FontWeight.Bold,
-                                    color = androidx.compose.ui.graphics.Color.Green
+                                    color = colorResource(id = R.color.deepGreen)
                                 )
                             )
                         }
