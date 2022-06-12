@@ -34,9 +34,9 @@ import com.example.chibbistest.data.models.Restaurant
 import com.example.chibbistest.ui.UiConsts
 import com.example.chibbistest.ui.components.AppBar
 import com.example.chibbistest.ui.navigation.BottomNavigationScreens
-import com.example.chibbistest.ui.viewmodels.RestaurantsListState
-import com.example.chibbistest.ui.viewmodels.RestaurantsListViewModel
-import com.example.chibbistest.ui.viewmodels.RestaurantsListViewModelFactory
+import com.example.chibbistest.ui.viewmodels.restaurantslist.RestaurantsListState
+import com.example.chibbistest.ui.viewmodels.restaurantslist.RestaurantsListViewModel
+import com.example.chibbistest.ui.viewmodels.restaurantslist.RestaurantsListViewModelFactory
 import com.skydoves.landscapist.glide.GlideImage
 import com.example.chibbistest.R
 import com.example.chibbistest.ui.ColorConsts
@@ -190,7 +190,7 @@ object RestaurantsListScreen {
                                 .width(UiConsts.listItemImageSize)
                                 .height(UiConsts.listItemImageSize),
                             imageModel = restaurant.logoUrl,
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             placeHolder = Icons.Outlined.BrokenImage,
                             error = Icons.Outlined.BrokenImage,
                         )

@@ -1,9 +1,10 @@
-package com.example.chibbistest.ui.viewmodels
+package com.example.chibbistest.ui.viewmodels.restaurantslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chibbistest.data.models.Restaurant
 import com.example.chibbistest.data.repositories.RestaurantsRepository
+import com.example.chibbistest.ui.viewmodels.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,10 +15,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class RestaurantsListViewModel @Inject constructor(private val restaurantsRepository: RestaurantsRepository) :
-    ViewModel() {
-
-    var jobs: ArrayList<Job> = arrayListOf()
-
+    BaseViewModel() {
     private val responseList =
         MutableStateFlow<List<Restaurant>>(listOf())
 
@@ -56,11 +54,4 @@ class RestaurantsListViewModel @Inject constructor(private val restaurantsReposi
 
     private fun sortList(list: List<Restaurant>): List<Restaurant> =
         list.sortedByDescending { it.positiveReviews }
-
-    override fun onCleared() {
-        super.onCleared()
-        for (job in jobs) {
-            job.cancel()
-        }
-    }
 }

@@ -1,14 +1,15 @@
-package com.example.chibbistest.ui.viewmodels
+package com.example.chibbistest.ui.viewmodels.hitslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.chibbistest.ChibbisTestApp
+import com.example.chibbistest.ui.viewmodels.restaurantslist.RestaurantsListViewModel
 import javax.inject.Inject
 
-class RestaurantsListViewModelFactory : ViewModelProvider.Factory {
+class HitsListViewModelFactory : ViewModelProvider.Factory {
 
     @Inject
-    lateinit var viewModel: RestaurantsListViewModel
+    lateinit var viewModel: HitsListViewModel
 
     init {
         ChibbisTestApp.instance.appComponent.inject(this)

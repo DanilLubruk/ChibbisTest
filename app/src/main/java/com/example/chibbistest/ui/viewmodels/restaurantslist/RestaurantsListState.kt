@@ -1,4 +1,4 @@
-package com.example.chibbistest.ui.viewmodels
+package com.example.chibbistest.ui.viewmodels.restaurantslist
 
 import com.example.chibbistest.data.models.Restaurant
 

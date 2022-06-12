@@ -19,8 +19,11 @@ object UiConsts {
     val textMediumSize = 14.sp
     val textLargeSize = 16.sp
     val listItemImageSize = 90.dp
+    val cardItemSmallImageSize = 40.dp
+    val cardItemBigImageSize = 194.dp
     val listItemSmallMargin = 4.dp
     val listItemMediumMargin = 8.dp
     val smallImageSize = 16.dp
     val mediumImageSize = 20.dp
+    val bigListItemHeight = 72.dp
 }

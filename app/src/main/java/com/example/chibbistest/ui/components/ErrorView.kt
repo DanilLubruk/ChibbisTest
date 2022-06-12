@@ -11,7 +11,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.chibbistest.R
 import com.example.chibbistest.ui.UiConsts
-import com.example.chibbistest.ui.viewmodels.RestaurantsListState
 import com.example.chibbistest.utils.GuiUtils
 
 object ErrorView {
