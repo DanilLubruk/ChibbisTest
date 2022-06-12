@@ -104,6 +104,9 @@ object ReviewsListScreen {
                     Spacer(modifier = Modifier.height(UiConsts.screenPadding))
                 }
                 ReviewListItem(review)
+                if (index == screenState.reviews.size - 1) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
             }
         }
     }

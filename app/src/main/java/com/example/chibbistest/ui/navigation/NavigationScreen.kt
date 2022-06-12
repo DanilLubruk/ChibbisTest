@@ -9,8 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +23,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.chibbistest.R
 import com.example.chibbistest.ui.Screens
-import com.example.chibbistest.ui.UiConsts
 import com.example.chibbistest.ui.listscreens.HitsListScreen
 import com.example.chibbistest.ui.listscreens.RestaurantsListScreen
 import com.example.chibbistest.ui.listscreens.ReviewsListScreen
@@ -33,7 +30,6 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
 
 class NavigationScreen : AppCompatActivity() {
 
@@ -51,7 +47,7 @@ class NavigationScreen : AppCompatActivity() {
                         navController,
                         BottomNavigationScreens.getScreens()
                     )
-                }) {
+                }) { innerPadding ->
                 var showExitDialog by remember { mutableStateOf(false) }
                 BackHandler {
                     showExitDialog = true
@@ -72,18 +68,20 @@ class NavigationScreen : AppCompatActivity() {
                         questionText = stringResource(id = R.string.message_ask_exit)
                     )
                 }
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = Screens.restaurantsListScreen
-                ) {
-                    composable(Screens.restaurantsListScreen) {
-                        RestaurantsListScreen.Screen()
-                    }
-                    composable(Screens.hitsListScreen) {
-                        HitsListScreen.Screen()
-                    }
-                    composable(Screens.reviewsListScreen) {
-                        ReviewsListScreen.Screen()
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    AnimatedNavHost(
+                        navController = navController,
+                        startDestination = Screens.restaurantsListScreen
+                    ) {
+                        composable(Screens.restaurantsListScreen) {
+                            RestaurantsListScreen.Screen()
+                        }
+                        composable(Screens.hitsListScreen) {
+                            HitsListScreen.Screen()
+                        }
+                        composable(Screens.reviewsListScreen) {
+                            ReviewsListScreen.Screen()
+                        }
                     }
                 }
             }
@@ -97,13 +95,18 @@ class NavigationScreen : AppCompatActivity() {
     ) {
         BottomNavigation(
             elevation = 0.dp,
-            backgroundColor = colorResource(id = R.color.royalBlue)
+            backgroundColor = colorResource(id = R.color.mainColor)
         ) {
             when (val currentRoute = currentRoute(navController)) {
                 currentRoute ->
                     items.forEach { screen ->
                         BottomNavigationItem(
-                            icon = { Icon(screen.icon, stringResource(id = screen.resourceId)) },
+                            icon = {
+                                Icon(
+                                    screen.icon,
+                                    stringResource(id = screen.resourceId)
+                                )
+                            },
                             label = { Text(stringResource(id = screen.resourceId)) },
                             selected = currentRoute == screen.route,
                             selectedContentColor = Color.White,
@@ -157,14 +160,14 @@ class NavigationScreen : AppCompatActivity() {
                 Row(
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(bottom = 16.dp, end = 16.dp)
+                        .padding(end = 16.dp)
                 ) {
                     TextButton(
                         onClick = onDismissRequest
                     ) {
                         Text(
                             text = stringResource(id = R.string.caption_cancel),
-                            style = TextStyle(color = colorResource(id = R.color.royalBlue))
+                            style = TextStyle(color = colorResource(id = R.color.mainColor))
                         )
                     }
 
@@ -176,7 +179,7 @@ class NavigationScreen : AppCompatActivity() {
                     ) {
                         Text(
                             text = stringResource(id = R.string.caption_ok),
-                            style = TextStyle(color = colorResource(id = R.color.royalBlue))
+                            style = TextStyle(color = colorResource(id = R.color.mainColor))
                         )
                     }
 

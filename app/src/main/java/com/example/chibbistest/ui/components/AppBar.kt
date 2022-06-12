@@ -25,7 +25,7 @@ object AppBar {
                     color = Color.White
                 )
             },
-            backgroundColor = colorResource(id = R.color.royalBlue),
+            backgroundColor = colorResource(id = R.color.mainColor),
             navigationIcon = {
                 IconButton(onClick = { }) {
                     Icon(icon, contentDescription = "", tint = Color.White)

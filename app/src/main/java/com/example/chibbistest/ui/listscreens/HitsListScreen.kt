@@ -94,6 +94,9 @@ object HitsListScreen {
                     Spacer(modifier = Modifier.height(UiConsts.screenPadding))
                 }
                 HitsListItem(hit)
+                if (index == screenState.hits.size - 1) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
             }
         }
     }

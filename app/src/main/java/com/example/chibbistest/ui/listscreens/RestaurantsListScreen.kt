@@ -138,9 +138,9 @@ object RestaurantsListScreen {
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
                         backgroundColor = Color.White,
-                        focusedIndicatorColor = colorResource(id = R.color.royalBlue),
-                        focusedLabelColor = colorResource(id = R.color.royalBlue),
-                        cursorColor = colorResource(id = R.color.royalBlue),
+                        focusedIndicatorColor = colorResource(id = R.color.mainColor),
+                        focusedLabelColor = colorResource(id = R.color.mainColor),
+                        cursorColor = colorResource(id = R.color.mainColor),
                     )
                 )
             }
@@ -172,6 +172,9 @@ object RestaurantsListScreen {
                     Spacer(modifier = Modifier.height(UiConsts.screenPadding))
                 }
                 RestaurantListItem(restaurant)
+                if (index == screenState.restaurants.size - 1) {
+                    Spacer(modifier = Modifier.height(UiConsts.screenPadding))
+                }
             }
         }
     }
