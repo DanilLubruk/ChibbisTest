@@ -33,8 +33,11 @@ data class Restaurant(
     val deliveryTimeString
         get() = "$DeliveryTime ${ResUtils.getString(R.string.caption_minutes)}"
 
-    val positiveReviews
+    val positiveReviewsString
         get() = "$PositiveReviews %"
+
+    val positiveReviews
+        get() = PositiveReviews
 
     val reviewsCount
         get() = "$ReviewsCount ${ResUtils.getString(R.string.caption_reviews)}"

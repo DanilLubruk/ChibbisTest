@@ -1,5 +1,6 @@
 package com.example.chibbistest.ui.components
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -15,6 +16,7 @@ object AppBar {
     fun AppBar(
         title: String,
         icon: ImageVector,
+        actions: @Composable (RowScope.() -> Unit) = {}
     ) {
         TopAppBar(
             title = {
@@ -29,6 +31,7 @@ object AppBar {
                     Icon(icon, contentDescription = "", tint = Color.White)
                 }
             },
+            actions = actions
         )
     }
 }

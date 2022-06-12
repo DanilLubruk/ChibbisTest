@@ -1,6 +1,5 @@
 package com.example.chibbistest.ui.listscreens
 
-import android.graphics.drawable.VectorDrawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,18 +13,16 @@ import androidx.compose.material.icons.outlined.BrokenImage
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -42,22 +39,52 @@ import com.example.chibbistest.ui.viewmodels.RestaurantsListViewModel
 import com.example.chibbistest.ui.viewmodels.RestaurantsListViewModelFactory
 import com.skydoves.landscapist.glide.GlideImage
 import com.example.chibbistest.R
-import com.example.chibbistest.utils.GuiUtils
+import com.example.chibbistest.ui.ColorConsts
+import com.example.chibbistest.ui.components.ErrorView
+import com.example.chibbistest.ui.components.LoadingView
 
 object RestaurantsListScreen {
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun Screen() {
         Scaffold {
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                AppBar.AppBar(
-                    title = stringResource(id = BottomNavigationScreens.Restaurants.resourceId),
-                    icon = BottomNavigationScreens.Restaurants.icon
-                )
-
                 val viewModel: RestaurantsListViewModel =
                     viewModel(factory = RestaurantsListViewModelFactory())
+                var showSearch by rememberSaveable { mutableStateOf(false) }
+                var searchText by rememberSaveable { mutableStateOf("") }
+                val setSearchText: (String) -> Unit = {
+                    searchText = it
+                    viewModel.onSearchTextChanged(searchText)
+                }
+
+                val keyboardController = LocalSoftwareKeyboardController.current
+                val focusRequester = remember { FocusRequester() }
+
+                AppBar.AppBar(
+                    title = stringResource(id = BottomNavigationScreens.Restaurants.resourceId),
+                    icon = BottomNavigationScreens.Restaurants.icon,
+                    actions = {
+                        IconButton(onClick = {
+                            setSearchText("")
+                            showSearch = !showSearch
+                            if (showSearch) {
+                                keyboardController?.show()
+                            } else {
+                                keyboardController?.hide()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                )
+
                 var screenState: RestaurantsListState by remember {
                     mutableStateOf(
                         RestaurantsListState.Loading
@@ -77,18 +104,57 @@ object RestaurantsListScreen {
                     viewModel.fetchRestaurants()
                 }
 
-                var showSearch by rememberSaveable { mutableStateOf(false) }
-                var searchText by rememberSaveable { mutableStateOf("") }
+                AnimatedVisibility(visible = showSearch) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(UiConsts.screenPadding)
+                            .focusRequester(focusRequester),
+                        value = searchText,
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { keyboardController?.hide() }
+                        ),
+                        onValueChange = {
+                            setSearchText(it)
+                        },
+                        trailingIcon = {
+                            AnimatedVisibility(
+                                visible = searchText != "",
+                            ) {
+                                IconButton(onClick = {
+                                    setSearchText("")
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Close,
+                                        contentDescription = ""
+                                    )
+                                }
+
+                            }
+                        },
+                        label = { Text(stringResource(id = R.string.caption_search_by_name)) },
+                        textStyle = MaterialTheme.typography.body1,
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = Color.Black,
+                            backgroundColor = Color.White,
+                            focusedIndicatorColor = colorResource(id = R.color.royalBlue),
+                            focusedLabelColor = colorResource(id = R.color.royalBlue),
+                            cursorColor = colorResource(id = R.color.royalBlue),
+                        )
+                    )
+                }
 
                 when (screenState) {
                     is RestaurantsListState.Loaded -> {
                         ListView((screenState as RestaurantsListState.Loaded))
                     }
                     is RestaurantsListState.Loading -> {
-                        LoadingView()
+                        LoadingView.LoadingView()
                     }
                     is RestaurantsListState.Error -> {
-                        ErrorView((screenState as RestaurantsListState.Error))
+                        ErrorView.ErrorView((screenState as RestaurantsListState.Error).message)
                     }
                 }
             }
@@ -144,7 +210,7 @@ object RestaurantsListScreen {
                             text = restaurant.specializationsString,
                             style = TextStyle(
                                 fontSize = UiConsts.textSmallSize,
-                                color = androidx.compose.ui.graphics.Color.Gray
+                                color = ColorConsts.secondaryTextColor
                             )
                         )
                         Spacer(modifier = Modifier.height(UiConsts.listItemMediumMargin))
@@ -159,7 +225,7 @@ object RestaurantsListScreen {
                             )
                             Spacer(modifier = Modifier.width(UiConsts.listItemSmallMargin))
                             Text(
-                                text = restaurant.positiveReviews,
+                                text = restaurant.positiveReviewsString,
                                 style = TextStyle(
                                     fontSize = UiConsts.textSmallSize,
                                     fontWeight = FontWeight.Bold,
@@ -172,7 +238,7 @@ object RestaurantsListScreen {
                             text = restaurant.reviewsCount,
                             style = TextStyle(
                                 fontSize = UiConsts.textSmallSize,
-                                color = androidx.compose.ui.graphics.Color.Gray
+                                color = ColorConsts.secondaryTextColor
                             )
                         )
                     }
@@ -191,7 +257,7 @@ object RestaurantsListScreen {
                                 .width(UiConsts.mediumImageSize),
                             imageVector = Icons.Filled.MonetizationOn,
                             contentDescription = "",
-                            tint = androidx.compose.ui.graphics.Color.LightGray
+                            tint = ColorConsts.secondaryIconsColor
                         )
                         Spacer(modifier = Modifier.width(UiConsts.listItemSmallMargin))
                         Text(
@@ -206,7 +272,7 @@ object RestaurantsListScreen {
                                 .width(UiConsts.mediumImageSize),
                             imageVector = Icons.Filled.DeliveryDining,
                             contentDescription = "",
-                            tint = androidx.compose.ui.graphics.Color.LightGray
+                            tint = ColorConsts.secondaryIconsColor
                         )
                         Spacer(modifier = Modifier.width(UiConsts.listItemSmallMargin))
                         Text(
@@ -221,7 +287,7 @@ object RestaurantsListScreen {
                                 .width(UiConsts.mediumImageSize),
                             imageVector = Icons.Filled.Schedule,
                             contentDescription = "",
-                            tint = androidx.compose.ui.graphics.Color.LightGray
+                            tint = ColorConsts.secondaryIconsColor
                         )
                         Spacer(modifier = Modifier.width(UiConsts.listItemSmallMargin))
                         Text(
@@ -231,41 +297,6 @@ object RestaurantsListScreen {
                     }
                 }
             }
-        }
-    }
-
-    @Composable
-    fun LoadingView() {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .height(UiConsts.circularProgressBarSize)
-                    .width(UiConsts.circularProgressBarSize),
-                strokeWidth = 2.dp,
-            )
-        }
-    }
-
-    @Composable
-    fun ErrorView(screenState: RestaurantsListState.Error) {
-        val context = LocalContext.current
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                text = stringResource(id = R.string.message_error_obtaining_data),
-                fontSize = UiConsts.textMediumSize
-            )
-            GuiUtils.showShortToast(
-                context,
-                screenState.message
-            )
         }
     }
 }
