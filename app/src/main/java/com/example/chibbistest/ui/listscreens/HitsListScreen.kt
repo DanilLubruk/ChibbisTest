@@ -153,7 +153,7 @@ object HitsListScreen {
                 Spacer(modifier = Modifier.height(UiConsts.screenPadding))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = hit.productDescription,
+                        text = hit.productDescriptionString,
                         style = TextStyle(
                             fontSize = UiConsts.textSmallSize,
                             color = ColorConsts.secondaryTextColor

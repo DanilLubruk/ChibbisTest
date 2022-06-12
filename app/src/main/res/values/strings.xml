@@ -9,4 +9,6 @@
     <string name="caption_reviews">отзывов</string>
     <string name="caption_from">от</string>
     <string name="caption_search_by_name">Поиск по имени</string>
+    <string name="caption_recipe">Состав</string>
+    <string name="caption_about">о заведении</string>
 </resources>

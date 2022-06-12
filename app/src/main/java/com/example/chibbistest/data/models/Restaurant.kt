@@ -15,7 +15,7 @@ data class Restaurant(
     private val Specializations: List<Specialization>
 ) {
     val name
-        get() = Name
+        get() = Name.trim()
 
     val logoUrl
         get() = Logo
@@ -46,7 +46,7 @@ data class Restaurant(
         get() {
             val stringBuilder = StringBuilder()
             Specializations.forEachIndexed { index, specialization ->
-                stringBuilder.append(specialization.Name)
+                stringBuilder.append(specialization.Name.trim())
                 if (index != Specializations.size - 1) {
                     stringBuilder.append(" | ")
                 }
